@@ -52,13 +52,24 @@ def updated() {
 def initialise() {
   subscribe(extDoor, "contact.open", extDoorOpenedHandler)
   subscribe(intDoor, "contact.open", intDoorOpenedHandler)
-	// TODO: subscribe to attributes, devices, locations, etc.
+  subscribe(extDoor, "contact.closed", extDoorClosedHandler)
+  subscribe(intDoor, "contact.closed", intDoorClosedHandler)
 }
 
 def extDoorOpenedHandler(evt) {
+  state.lastOpened = 'external'
   log.debug("External opened")
 }
 
 def intDoorOpenedHandler(evt) {
+  state.lastOpened = 'internal'
   log.debug("Internal opened")
+}
+
+def extDoorClosedHandler(evt) {
+  log.debug(state.lastOpened)
+}
+
+def intDoorClosedHandler(evt) {
+  log.debug(state.lastOpened)
 }

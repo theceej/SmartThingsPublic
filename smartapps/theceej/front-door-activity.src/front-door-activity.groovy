@@ -19,9 +19,9 @@ definition(
   author: "Chris Jordan",
   description: "Control lights in porch based on sensors on two doors",
   category: "Convenience",
-  iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
-  iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-  iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
+  iconUrl: 'http://cdn.device-icons.smartthings.com/Lighting/light15-icn.png',
+  iconX2Url: 'http://cdn.device-icons.smartthings.com/Lighting/light15-icn@2x.png'
+  iconX3Url: 'http://cdn.device-icons.smartthings.com/Lighting/light15-icn@3x.png')
 
 
 preferences {
@@ -33,27 +33,27 @@ preferences {
     input 'porchLight', 'capability.switch', required: true, title: 'Porch light'
   }
   section('Timer:') {
-    input 'lightTimeout', 'number', title: 'Porch light timeout (seconds)', defaultValue: 30
+    input 'lightTimeout', 'number', required: true, title: 'Porch light timeout (seconds)'
   }
 }
 
 def installed() {
-	log.debug "Installed with settings: ${settings}"
+	log.debug 'Installed with settings: ${settings}'
 
 	initialise()
 }
 
 def updated() {
-	log.debug "Updated with settings: ${settings}"
+	log.debug 'Updated with settings: ${settings}'
 
 	unsubscribe()
 	initialise()
 }
 
 def initialise() {
-  subscribe(extDoor, "contact.open", extDoorOpenedHandler)
-  subscribe(intDoor, "contact.open", intDoorOpenedHandler)
-  subscribe(extDoor, "contact.closed", extDoorClosedHandler)
+  subscribe(extDoor, 'contact.open', extDoorOpenedHandler)
+  subscribe(intDoor, 'contact.open', intDoorOpenedHandler)
+  subscribe(extDoor, 'contact.closed', extDoorClosedHandler)
 }
 
 def extDoorOpenedHandler(evt) {
@@ -80,5 +80,6 @@ def extDoorClosedHandler(evt) {
 }
 
 def timeoutHandler() {
+  log.debug('Timed out')
   porchLight.off()
 }

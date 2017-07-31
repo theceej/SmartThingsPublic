@@ -25,14 +25,15 @@ definition(
 
 
 preferences {
-  section("External door sensor:") {
-    input "extDoor", "capability.contactSensor", required: true
+  section('Door contact sensors:') {
+    input 'extDoor', 'capability.contactSensor', required: true, title: 'External door'
+    input 'intDoor', 'capability.contactSensor', required: true, title: 'Internal door'
   }
-  section("Internal door sensor:") {
-    input "intDoor", "capability.contactSensor", required: true
+  section('Light:') {
+    input 'porchLight', 'capability.switch', required: true, title: 'Porch light'
   }
-  section("Porch light:") {
-    input "porchLight", "capability.switch", required: true
+  section('Timer:') {
+    input 'lightTimeout', 'number', title: 'Porch light timeout (seconds)', defaultValue: 30
   }
 }
 
@@ -53,7 +54,6 @@ def initialise() {
   subscribe(extDoor, "contact.open", extDoorOpenedHandler)
   subscribe(intDoor, "contact.open", intDoorOpenedHandler)
   subscribe(extDoor, "contact.closed", extDoorClosedHandler)
-  subscribe(intDoor, "contact.closed", intDoorClosedHandler)
 }
 
 def extDoorOpenedHandler(evt) {
@@ -63,14 +63,22 @@ def extDoorOpenedHandler(evt) {
     state.direction = 'arriving'
   }
   state.internalTriggered = false
+  porchLight.on()
+  runIn(lightTimeout, timeoutHandler)
   log.debug("External opened")
 }
 
 def intDoorOpenedHandler(evt) {
   state.internalTriggered = true
+  porchLight.on()
+  runIn(lightTimeout, timeoutHandler)
   log.debug("Internal opened")
 }
 
 def extDoorClosedHandler(evt) {
   log.debug(state.direction)
+}
+
+def timeoutHandler() {
+  porchLight.off()
 }

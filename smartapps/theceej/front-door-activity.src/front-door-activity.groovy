@@ -57,19 +57,20 @@ def initialise() {
 }
 
 def extDoorOpenedHandler(evt) {
-  state.lastOpened = 'external'
+  if (state.internalTriggered) {
+    state.direction = 'leaving'
+  } else {
+    state.direction = 'arriving'
+  }
+  state.internalTriggered = false
   log.debug("External opened")
 }
 
 def intDoorOpenedHandler(evt) {
-  state.lastOpened = 'internal'
+  state.internalTriggered = true
   log.debug("Internal opened")
 }
 
 def extDoorClosedHandler(evt) {
-  log.debug(state.lastOpened)
-}
-
-def intDoorClosedHandler(evt) {
-  log.debug(state.lastOpened)
+  log.debug(state.direction)
 }
